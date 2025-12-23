@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Shivang | Friend Circle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- THEME VARIABLES --- */
+    :root {
+      --bg-gradient: linear-gradient(125deg, #FF9A9E 0%, #FECFEF 50%, #90e0ef 100%);
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+      --primary-color: #6366f1;
+      --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      background-size: 200% 200%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- LAYOUT CONTAINER --- */
+    .app-container {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      height: 85vh;
+      justify-content: center;
+    }
+
+    /* --- GLASS WINDOW --- */
+    .glass-window {
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- HEADER --- */
+    .window-header {
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #555;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .close-btn:hover { color: #e11d48; transform: scale(1.1); }
+
+    /* --- CONTENT BODY --- */
+    .content-body {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.1) transparent;
+    }
+    .content-body::-webkit-scrollbar { width: 6px; }
+    .content-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+    /* --- FRIENDS GRID --- */
+    .category-section {
+      margin-bottom: 40px;
+    }
+
+    .category-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+      padding-bottom: 8px;
+      display: inline-block;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .friend-card {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .friend-card:hover {
+      background: white;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+
+    .friend-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      cursor: zoom-in;
+      transition: transform 0.2s;
+    }
+    .friend-img:hover { transform: scale(1.05); }
+
+    .friend-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 5px;
+    }
+
+    .friend-quote {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    /* --- MODAL --- */
+    #imageModal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6); /* Darker backdrop */
+      backdrop-filter: blur(5px); /* Blur effect */
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    #modalImg {
+      max-width: 90%;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      border: 2px solid white;
+      animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes scaleUp {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* --- FOOTER --- */
+    .window-footer {
+      padding: 20px;
+      background: rgba(255,255,255,0.4);
+      border-top: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: center;
+    }
+
+    .pill-btn {
+      background: white;
+      border: 1px solid transparent;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-decoration: none;
+    }
+
+    .pill-btn:hover {
+      background: #e11d48;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(225, 29, 72, 0.2);
+    }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 768px) {
+      .app-container {
+        width: 94%;
+        height: 94vh;
+      }
+      
+      .content-body { padding: 20px; }
+      
+      /* 2 Columns on mobile instead of 1 for photos */
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .window-header h2 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <main class="glass-window">
+      
+      <div class="window-header">
+        <div class="header-title">Friend Circle</div>
+        <a href="index.html" class="close-btn" aria-label="Close">×</a>
+      </div>
+
+      <div class="content-body" id="friends-container">
+        <div style="text-align:center; color:#666; margin-top:20px;">Loading friends...</div>
+      </div>
+
+      <div class="window-footer"></div>
+
+    </main>
+  </div>
+
+  <div id="imageModal" onclick="closeModal()">
+    <img id="modalImg" src="" alt="Expanded View">
+  </div>
+
+  <script>
+    async function loadFriends() {
+      try {
+        const response = await fetch("friends.json");
+        const data = await response.json();
+        const container = document.getElementById("friends-container");
+        container.innerHTML = "";
+
+        const categories = {};
+
+        // Group friends by category
+        data.friends.forEach(friend => {
+          if (!categories[friend.category]) {
+            categories[friend.category] = [];
+          }
+          categories[friend.category].push(friend);
+        });
+
+        // Generate HTML dynamically
+        for (let category in categories) {
+          // Category wrapper
+          const sectionDiv = document.createElement("div");
+          sectionDiv.className = "category-section";
+
+          // Title
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "category-title";
+          titleDiv.textContent = category;
+          sectionDiv.appendChild(titleDiv);
+
+          // Grid
+          const gridContainer = document.createElement("div");
+          gridContainer.className = "grid-container";
+
+          categories[category].forEach(friend => {
+            const card = document.createElement("div");
+            card.className = "friend-card";
+            
+            // Using template literal for cleaner HTML generation
+            card.innerHTML = `
+              <img src="${friend.image}" alt="${friend.name}" class="friend-img" onclick="showImage('${friend.image}')">
+              <div class="friend-name">${friend.name}</div>
+              <div class="friend-quote">"${friend.quote}"</div>
+            `;
+            gridContainer.appendChild(card);
+          });
+
+          sectionDiv.appendChild(gridContainer);
+          container.appendChild(sectionDiv);
+        }
+      } catch (error) {
+        console.error("Error loading JSON:", error);
+        document.getElementById("friends-container").innerHTML = 
+            '<div style="text-align:center; color:#e11d48;">Failed to load friends.json</div>';
+      }
+    }
+
+    function showImage(src) {
+      document.getElementById("imageModal").style.display = "flex";
+      document.getElementById("modalImg").src = src;
+    }
+
+    function closeModal() {
+      document.getElementById("imageModal").style.display = "none";
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+
+    // Load on page ready
+    window.onload = loadFriends;
+  </script>
+
+</body>
+</html>

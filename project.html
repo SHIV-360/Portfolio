@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Shivang | Projects</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- THEME VARIABLES --- */
+    :root {
+      --bg-gradient: linear-gradient(125deg, #FF9A9E 0%, #FECFEF 50%, #90e0ef 100%);
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+      --primary-color: #6366f1;
+      --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      background-size: 200% 200%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- LAYOUT CONTAINER --- */
+    .app-container {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      height: 85vh;
+      justify-content: center;
+    }
+
+    /* --- GLASS WINDOW --- */
+    .glass-window {
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- HEADER --- */
+    .window-header {
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #555;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .close-btn:hover { color: #e11d48; transform: scale(1.1); }
+
+    /* --- CONTENT BODY --- */
+    .content-body {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.1) transparent;
+    }
+    
+    .content-body::-webkit-scrollbar { width: 6px; }
+    .content-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+    /* --- PROJECTS GRID --- */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card:hover {
+      background: white;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border-color: white;
+    }
+
+    .project-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #111;
+      margin: 0;
+    }
+
+    .meta-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .badge.tech {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-color);
+    }
+
+    .badge.year {
+      background: rgba(0,0,0,0.05);
+      color: #666;
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: #4b5563;
+      line-height: 1.5;
+      flex-grow: 1; /* Pushes the button to bottom */
+    }
+
+    .project-link {
+      margin-top: 10px;
+      display: inline-block;
+      text-decoration: none;
+      color: white;
+      background: var(--primary-color);
+      padding: 10px 0;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .project-link:hover {
+      background: #4f46e5;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Loading State */
+    .loading-text {
+      text-align: center;
+      color: var(--text-muted);
+      font-style: italic;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    /* --- FOOTER --- */
+    .window-footer {
+      padding: 20px;
+      background: rgba(255,255,255,0.4);
+      border-top: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: center;
+    }
+
+    .pill-btn {
+      background: white;
+      border: 1px solid transparent;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-decoration: none;
+    }
+
+    .pill-btn:hover {
+      background: #e11d48;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(225, 29, 72, 0.2);
+    }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 768px) {
+      .app-container {
+        width: 94%;
+        height: 94vh;
+      }
+      
+      .content-body { padding: 20px; }
+      
+      .projects-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+      }
+      
+      .window-header h2 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <main class="glass-window">
+      
+      <div class="window-header">
+        <div class="header-title">Projects</div>
+        <a href="index.html" class="close-btn" aria-label="Close">×</a>
+      </div>
+
+      <div class="content-body">
+        <div id="loading" class="loading-text">Loading projects...</div>
+        <div class="projects-grid" id="projects-container">
+          </div>
+      </div>
+
+      <div class="window-footer"></div>
+      
+
+    </main>
+  </div>
+
+  <script>
+    async function loadProjects() {
+      const container = document.getElementById('projects-container');
+      const loading = document.getElementById('loading');
+
+      try {
+        const response = await fetch('projects.json');
+        
+        if (!response.ok) {
+           throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const projects = await response.json();
+        
+        // Remove loading text
+        loading.style.display = 'none';
+
+        projects.forEach(project => {
+          const projectCard = document.createElement('div');
+          projectCard.classList.add('project-card');
+
+          // New HTML Structure for Card
+          projectCard.innerHTML = `
+            <div class="project-title">${project.title}</div>
+            <div class="meta-tags">
+              <span class="badge tech">${project.technology}</span>
+              <span class="badge year">${project.year}</span>
+            </div>
+            <div class="project-desc">${project.description}</div>
+            <a href="${project.link}" class="project-link" target="_blank">View Project</a>
+          `;
+
+          container.appendChild(projectCard);
+        });
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        loading.innerHTML = "Failed to load projects. <br> Please check if 'projects.json' exists.";
+        loading.style.color = "#e11d48";
+      }
+    }
+
+    loadProjects();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Shivang | About Me</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- THEME VARIABLES (Same as Index) --- */
+    :root {
+      --bg-gradient: linear-gradient(125deg, #FF9A9E 0%, #FECFEF 50%, #90e0ef 100%);
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+      --primary-color: #6366f1;
+      --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      background-size: 200% 200%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- LAYOUT CONTAINER --- */
+    .app-container {
+      display: flex;
+      width: 90%;
+      max-width: 1000px; 
+      height: 85vh;
+      justify-content: center;
+    }
+
+    /* --- GLASS WINDOW --- */
+    .glass-window {
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- HEADER --- */
+    .window-header {
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #555;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .close-btn:hover { color: #e11d48; transform: scale(1.1); }
+
+    /* --- CONTENT BODY (Scrollable) --- */
+    .content-body {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.1) transparent;
+    }
+    
+    .content-body::-webkit-scrollbar { width: 6px; }
+    .content-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+    /* --- RESUME SECTIONS --- */
+    
+    /* 1. Profile Header */
+    .profile-section {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 20px; /* Slight rounded square */
+      object-fit: cover;
+      border: 4px solid white;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .profile-img:hover { transform: scale(1.05) rotate(2deg); }
+
+    .profile-details h1 { margin: 0 0 5px 0; font-size: 2rem; color: #111; }
+    .profile-details p { margin: 5px 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.4; }
+    .profile-details a { 
+      color: var(--primary-color); 
+      font-weight: 600; 
+      text-decoration: none;
+      border-bottom: 1px dotted transparent;
+      transition: border-color 0.2s;
+    }
+    .profile-details a:hover { border-bottom-color: var(--primary-color); }
+
+    /* 2. Generic Sections */
+    .resume-block { margin-bottom: 35px; }
+    
+    .section-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-heading::after {
+      content: "";
+      flex-grow: 1;
+      height: 1px;
+      background: rgba(99, 102, 241, 0.2);
+    }
+
+    /* Grids for specific content */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.5);
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: all 0.2s;
+    }
+    .card:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .card h3 { margin: 0 0 5px 0; font-size: 1rem; font-weight: 700; }
+    .card span { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
+    .card p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #374151; }
+
+    /* Skills List */
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .skill-tag {
+      background: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #4b5563;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* Simple Lists */
+    ul { padding-left: 20px; margin: 0; }
+    li { margin-bottom: 8px; font-size: 0.95rem; color: #374151; line-height: 1.5; }
+
+    /* --- FOOTER (Buttons) --- */
+    .window-footer {
+      padding: 20px;
+      background: rgba(255,255,255,0.4);
+      border-top: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      background: white;
+      border: 1px solid transparent;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .pill-btn.secondary {
+      background: rgba(255,255,255,0.5);
+    }
+    .pill-btn.secondary:hover {
+      background: #e11d48; /* Red for back button hover */
+    }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 768px) {
+      .app-container {
+        width: 94%;
+        height: 94vh;
+      }
+      
+      .profile-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+
+      .content-body { padding: 25px; }
+
+      .info-grid { grid-template-columns: 1fr; }
+      
+      .window-header h2 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <main class="glass-window">
+      
+      <div class="window-header">
+        <div class="header-title">
+           About Me
+        </div>
+        <a href="index.html" class="close-btn" aria-label="Close">×</a>
+      </div>
+
+      <div class="content-body">
+        
+        <div class="profile-section">
+          <div class="image-wrapper">
+            <img src="gallary/pic.jpg" alt="Shivang Dwivedi" class="profile-img">
+          </div>
+          <div class="profile-details">
+            <h1>Shivang Dwivedi</h1>
+            <p>📍 Jajpur Road, Odisha, India</p>
+            <p>📧 shivangd262@gmail.com</p>
+            <p>📞 +91 7357617705</p>
+            <p>
+              <a href="https://www.linkedin.com/in/shivang-dwivedi-36o/" target="_blank">LinkedIn: Shivang Dwivedi</a> • 
+              <a href="https://github.com/SHIV-360" target="_blank">GitHub: SHIV-360</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="resume-block">
+          <div class="section-heading">Education</div>
+          <div class="info-grid">
+            <div class="card">
+              <h3>Bachelor of Technology (CSE)</h3>
+              <span>Vellore Institute of Technology, Bhopal | July 2026</span>
+              <p>CGPA: 8.76/10</p>
+            </div>
+            <div class="card">
+              <h3>Class XII (HSC)</h3>
+              <span>Lord Buddha Public School, Kota | July 2022</span>
+              <p>Percentage: 81.8%</p>
+            </div>
+            <div class="card">
+              <h3>Class X (SSC)</h3>
+              <span>LBS Convent School, Kota | July 2020</span>
+              <p>Percentage: 89.6%</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="resume-block">
+          <div class="section-heading">Technical Skills</div>
+          <div class="skills-list">
+            <div class="skill-tag">Java</div>
+            <div class="skill-tag">Go</div>
+            <div class="skill-tag">Python</div>
+            <div class="skill-tag">MySQL</div>
+            <div class="skill-tag">Bash</div>
+            <div class="skill-tag">Linux</div>
+            <div class="skill-tag">Git</div>
+            <div class="skill-tag">GitHub</div>
+            <div class="skill-tag">GitHub Action</div>
+            <div class="skill-tag">Shell Scripting</div>
+            <div class="skill-tag">AWS</div>
+            <div class="skill-tag">DS&A</div>
+            <div class="skill-tag">OOP</div>
+            <div class="skill-tag">DBMS</div>
+            <div class="skill-tag">OS</div>
+            <div class="skill-tag">Networking</div>
+            <div class="skill-tag">Cloud Computing</div>
+          </div>
+        </div>
+
+        <div class="resume-block">
+          <div class="section-heading">Certifications</div>
+          <ul>
+            <li>Cloud Foundation and Cloud Architecting (AWS Academy)</li>
+            <li>Cloud Computing (Swayam NPTEL, Silver Medal)</li>
+            <li>DevOps & Agile (IBM)</li>
+            <li>AI and ML Basics (Vityarthi, VIT Bhopal)</li>
+            <li>Python (Vityarthi, VIT Bhopal University)</li>
+          </ul>
+        </div>
+
+        <div class="resume-block">
+          <div class="section-heading">Projects</div>
+          <div class="info-grid">
+            <div class="card">
+              <h3>Bengali Sentiment Analysis</h3>
+              <span>Python, NLTK, Pandas, sklearn, Tkinter</span>
+              <p>Developed a sentiment analysis model to promote the Bengali language. Role: Data split, model training, tuning, and UI.</p>
+              <p style="margin-top:5px;"><a href="https://github.com/SHIV-360/SENTIMENT_ANALYSIS-for-BENGALI-LANGUAGE" target="_blank" style="color:var(--primary-color); font-size:0.85rem;">View on GitHub</a></p>
+            </div>
+            <div class="card">
+              <h3>Game Simulations</h3>
+              <span>Python, Turtle Library</span>
+              <p>Developed multiple interactive games including Snake Game, Ping Pong, and Stone Paper Scissors simulation.</p>
+              <p style="margin-top:5px;"><a href="https://github.com/SHIV-360" target="_blank" style="color:var(--primary-color); font-size:0.85rem;">View on GitHub</a></p>
+            </div>
+            <div class="card">
+              <h3>Tor Auto IP Changer</h3>
+              <span>Python, Linux, Tor, Browser config</span>
+              <p>Script changes your public IP address every 10 seconds using the Tor network.</p>
+              <p style="margin-top:5px;"><a href="https://github.com/SHIV-360/AUTO_TOR_from_SCRATCH" target="_blank" style="color:var(--primary-color); font-size:0.85rem;">View on GitHub</a></p>
+            </div>
+            <div class="card" style="display:flex; align-items:center; justify-content:center;">
+              <p><strong>More projects available <a href="project.html" style="color:var(--primary-color);">here</a></strong></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="resume-block">
+          <div class="section-heading">Leadership & Responsibilities</div>
+          <ul>
+            <li>Co-lead in Tech Department, NULL Cyber Security Chapter</li>
+            <li>Core Member, Electric Vehicle Club</li>
+            <li>Core Member, Hostel Committee</li>
+          </ul>
+        </div>
+
+        <div class="resume-block">
+          <div class="section-heading">Achievements</div>
+          <ul>
+            <li>Geek for Geek University Rank: 2435/8000+</li>
+            <li>Solved 150+ DSA problems</li>
+            <li>Open Source Contribution in SSOC25, GsSOC25, 24 and 24extnd</li>
+            <li>Hacktoberfest 2024 Participant</li>
+            <li>Silver Medal in Science and Maths Olympiad (3 times)</li>
+            <li>First Prize in Interschool Debate Competitions (2 times)</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="window-footer">
+        <a href="https://github.com/SHIV-360/SHIV-360/blob/main/Shivang_Resume_2.pdf" target="_blank" download class="pill-btn">
+          Download Resume
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

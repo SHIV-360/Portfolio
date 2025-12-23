@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Shivang | Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- THEME VARIABLES --- */
+    :root {
+      --bg-gradient: linear-gradient(125deg, #FF9A9E 0%, #FECFEF 50%, #90e0ef 100%);
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+      --primary-color: #6366f1;
+      --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      background-size: 200% 200%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- LAYOUT CONTAINER --- */
+    .app-container {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      height: 85vh;
+      justify-content: center;
+    }
+
+    /* --- GLASS WINDOW --- */
+    .glass-window {
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- HEADER --- */
+    .window-header {
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #555;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .close-btn:hover { color: #e11d48; transform: scale(1.1); }
+
+    /* --- CONTENT BODY --- */
+    .content-body {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.1) transparent;
+    }
+    
+    .content-body::-webkit-scrollbar { width: 6px; }
+    .content-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+    /* --- GALLERY MASONRY --- */
+    .gallery-intro {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--primary-color);
+      margin-bottom: 25px;
+      font-style: italic;
+    }
+
+    .gallery-grid {
+      column-count: 3;
+      column-gap: 20px;
+    }
+
+    /* Responsive Columns */
+    @media (max-width: 900px) { .gallery-grid { column-count: 2; } }
+    @media (max-width: 600px) { .gallery-grid { column-count: 1; } }
+
+    .gallery-grid img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      margin-bottom: 20px; /* Vertical spacing */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: zoom-in;
+      transition: all 0.3s ease;
+      background: white; /* Placeholder color */
+      padding: 5px; /* Frame effect */
+      break-inside: avoid;
+      
+      /* Fade in animation */
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    .gallery-grid img:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+      z-index: 2;
+    }
+
+    /* --- MODAL --- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85); /* Slightly darker for better contrast */
+      backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      animation: fadeInModal 0.3s ease;
+    }
+
+    @keyframes fadeInModal {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-content-wrapper {
+        position: relative;
+        max-width: 90%;
+        max-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal img {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      border: 2px solid white;
+      animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes zoomIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* NAVIGATION BUTTONS */
+    .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s;
+        backdrop-filter: blur(5px);
+        user-select: none;
+        outline: none;
+    }
+    
+    .nav-btn:hover {
+        background: white;
+        color: black;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .prev-btn { left: -70px; }
+    .next-btn { right: -70px; }
+
+    /* Modal Close Button */
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 40px;
+        line-height: 1;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        z-index: 2001;
+    }
+    .modal-close:hover { opacity: 1; }
+
+    /* --- FOOTER --- */
+    .window-footer {
+      padding: 20px;
+      background: rgba(255,255,255,0.4);
+      border-top: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: center;
+    }
+
+    .pill-btn {
+      background: white;
+      border: 1px solid transparent;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-decoration: none;
+    }
+
+    .pill-btn:hover {
+      background: #e11d48;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(225, 29, 72, 0.2);
+    }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 768px) {
+      .app-container {
+        width: 94%;
+        height: 94vh;
+      }
+      
+      .content-body { padding: 20px; }
+      .window-header h2 { font-size: 1.2rem; }
+      .gallery-intro { font-size: 1rem; }
+
+      /* Mobile Modal Adjustments */
+      .nav-btn { width: 40px; height: 40px; font-size: 20px; }
+      /* Move arrows to bottom on mobile so they don't cover image */
+      .prev-btn { left: 0; top: unset; bottom: -60px; transform: none; }
+      .next-btn { right: 0; top: unset; bottom: -60px; transform: none; }
+      .prev-btn:hover, .next-btn:hover { transform: scale(1.1); }
+      .modal img { max-height: 70vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <main class="glass-window">
+      
+      <div class="window-header">
+        <div class="header-title">Gallery</div>
+        <a href="index.html" class="close-btn" aria-label="Close">×</a>
+      </div>
+
+      <div class="content-body">
+        <div class="gallery-intro">
+          "I'm passionate about photography, and I'm excited to share my collection"
+        </div>
+        
+        <div class="gallery-grid" id="gallery">
+          </div>
+      </div>
+
+      <div class="window-footer">
+      </div>
+
+    </main>
+  </div>
+
+  <div class="modal" id="imageModal">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <div class="modal-content-wrapper">
+        <button class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</button>
+        <img id="modalImg" src="" alt="Expanded View">
+        <button class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</button>
+    </div>
+  </div>
+
+  <script>
+    // CONFIGURATION
+    const imageDir = "gallary/";  
+    const checkLimit = 100;       
+    
+    const gallery = document.getElementById("gallery");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    
+    // We will dynamically populate this list with currently visible images
+    let currentGalleryImages = [];
+    let currentIndex = 0;
+
+    function loadImages() {
+      for (let i = 1; i <= checkLimit; i++) {
+        let img = document.createElement("img");
+        
+        // Try loading images sequentially
+        img.src = `${imageDir}pic${i}.jpg`;
+        img.alt = `Photo ${i}`;
+        img.loading = "lazy";
+
+        // If image fails to load (404), remove it completely
+        img.onerror = function() {
+          this.remove();
+        };
+
+        // Open Modal on Click
+        img.onclick = function() {
+          openModal(this);
+        };
+
+        gallery.appendChild(img);
+      }
+    }
+
+    function openModal(clickedImgElement) {
+        modal.style.display = "flex";
+        modalImg.src = clickedImgElement.src;
+        
+        // Refresh list of currently valid/visible images in the DOM
+        // This handles cases where images were removed due to errors
+        currentGalleryImages = Array.from(document.querySelectorAll('#gallery img'));
+        
+        // Find the index of the clicked image
+        currentIndex = currentGalleryImages.indexOf(clickedImgElement);
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    function changeImage(direction) {
+        if (currentGalleryImages.length === 0) return;
+
+        currentIndex += direction;
+
+        // Loop around logic
+        if (currentIndex >= currentGalleryImages.length) {
+            currentIndex = 0;
+        } else if (currentIndex < 0) {
+            currentIndex = currentGalleryImages.length - 1;
+        }
+
+        // Add a small fade effect
+        modalImg.style.opacity = 0.5;
+        setTimeout(() => {
+            modalImg.src = currentGalleryImages[currentIndex].src;
+            modalImg.style.opacity = 1;
+        }, 150);
+    }
+
+    // Initialize
+    loadImages();
+
+    // Close Modal Logic: Click Outside
+    modal.onclick = function(event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    // Keyboard Navigation
+    document.addEventListener("keydown", function(event) {
+      if (modal.style.display === "flex") {
+        if (event.key === "Escape") closeModal();
+        if (event.key === "ArrowLeft") changeImage(-1);
+        if (event.key === "ArrowRight") changeImage(1);
+      }
+    });
+  </script>
+
+</body>
+</html>

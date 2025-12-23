@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Chat With Shivang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- THEME VARIABLES --- */
+    :root {
+      /* Colorful Mesh Gradient Background */
+      --bg-gradient: linear-gradient(125deg, #FF9A9E 0%, #FECFEF 50%, #90e0ef 100%);
+      
+      /* Glassmorphism Variables */
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+      
+      /* Chat Colors */
+      --primary-color: #6366f1; /* Indigo */
+      --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --user-text: #ffffff;
+      --bot-bg: #ffffff;
+      --bot-text: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      background-size: 200% 200%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- LAYOUT CONTAINER --- */
+    .app-container {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      height: 85vh;
+      gap: 20px;
+    }
+
+    /* --- SIDEBAR DOCK (Desktop) --- */
+    .dock-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 15px;
+      padding-right: 10px;
+    }
+
+    .dock-item {
+      width: 55px;
+      height: 55px;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 16px; /* Squircle */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #4b5563;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    /* Base Hover Effect */
+    .dock-item:hover {
+      transform: scale(1.15) translateX(5px);
+      color: white; /* Icon becomes white */
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+      z-index: 10;
+      border-color: transparent;
+    }
+
+    /* --- BRAND COLORS ON HOVER --- */
+    .dock-item[data-social="resume"]:hover { background: #ff9800; }
+    .dock-item[data-social="github"]:hover { background: #333; }
+    .dock-item[data-social="gmail"]:hover { background: #D44638; }
+    .dock-item[data-social="linkedin"]:hover { background: #0077B5; }
+    .dock-item[data-social="spotify"]:hover { background: #1db954; }
+
+    /* Tooltip Brand Colors */
+    .dock-item[data-social="resume"]:hover::after { background: #ff9800; }
+    .dock-item[data-social="github"]:hover::after { background: #333; }
+    .dock-item[data-social="gmail"]:hover::after { background: #D44638; }
+    .dock-item[data-social="linkedin"]:hover::after { background: #0077B5; }
+    .dock-item[data-social="spotify"]:hover::after { background: #1db954; }
+
+    .dock-item svg { width: 24px; height: 24px; fill: currentColor; }
+
+    /* Tooltip */
+    .dock-item::after {
+      content: attr(aria-label);
+      position: absolute;
+      left: 70px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .dock-item:hover::after { opacity: 1; left: 80px; }
+
+
+    /* --- MAIN CHAT WINDOW --- */
+    .glass-window {
+      flex-grow: 1;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- HEADER --- */
+    .window-header {
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-info {
+        display: flex;
+        align-items: center;
+        gap: 12px; 
+    }
+
+    .header-info h2 {
+      margin: 0;
+      font-size: 1.5rem; 
+      font-weight: 800;
+      color: #111;
+      line-height: 1;
+    }
+
+    .divider {
+        font-size: 1.5rem;
+        color: #999;
+        font-weight: 300;
+    }
+
+    .header-info span#timeInWords {
+      font-size: 1.2rem; 
+      color: #444;
+      font-weight: 500;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    
+    /* --- FIXED: Hour Color --- */
+    #timeInWords .hour { 
+      background: var(--primary-gradient); 
+      
+      /* The Fix: Add the standard property below the webkit one */
+      -webkit-background-clip: text;
+      background-clip: text; 
+      
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      color: var(--primary-color);
+    }
+
+    /* Windows Close Button Style */
+    .close-btn {
+        background: transparent;
+        border: none;
+        color: #555;
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0 5px;
+        border-radius: 4px;
+        font-family: 'Inter', sans-serif;
+    }
+    .close-btn:hover {
+        color: #e11d48; /* Red color on hover */
+        background: rgba(225, 29, 72, 0.1);
+        transform: scale(1.1);
+    }
+
+
+    /* Chat Area */
+    .chat-body {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .chat-body::-webkit-scrollbar { width: 6px; }
+    .chat-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+    .message {
+      max-width: 75%;
+      padding: 14px 20px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      position: relative;
+      animation: floatUp 0.3s ease-out;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bot Style */
+    .message.bot {
+      background: var(--bot-bg);
+      color: var(--bot-text);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    /* User Style */
+    .message.user {
+      background: var(--primary-gradient);
+      color: var(--user-text);
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .message a { color: #6366f1; text-decoration: none; font-weight: 600; border-bottom: 1px dotted; }
+    .message.user a { color: white; border-bottom: 1px solid white; }
+
+    .typing {
+      font-size: 0.8rem;
+      color: #666;
+      margin-left: 20px;
+      margin-bottom: 10px;
+      font-style: italic;
+      display: none;
+    }
+
+    /* Footer / Interactions */
+    .window-footer {
+      padding: 20px;
+      background: rgba(255,255,255,0.4);
+      border-top: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .options-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pill-btn {
+      background: white;
+      border: 1px solid transparent;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .pill-btn:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 768px) {
+      /* Floating Container */
+      .app-container {
+        flex-direction: column;
+        width: 94%;
+        height: 94vh;
+        gap: 15px;
+        max-width: none;
+      }
+
+      /* Floating Dock Island */
+      .dock-container {
+        flex-direction: row;
+        width: 100%;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.4);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      }
+
+      .dock-item {
+        width: 45px; height: 45px;
+        border-radius: 12px;
+      }
+      
+      /* Reset desktop hover transform for mobile */
+      .dock-item:hover { transform: scale(1.1); }
+      .dock-item::after { display: none; } 
+
+      /* Floating Window */
+      .glass-window {
+        width: 100%;
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        flex-grow: 1;
+      }
+
+      .window-header { padding: 15px; }
+      .header-info h2 { font-size: 1.2rem; }
+      .divider { font-size: 1.2rem; }
+      .header-info span#timeInWords { font-size: 0.9rem; }
+
+      .chat-body { padding: 20px; }
+      .message { max-width: 85%; font-size: 0.9rem; }
+      
+      .pill-btn {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 10px 15px;
+        font-size: 0.85rem;
+      }
+    }
+    
+    /* Extra Small Screen Fix */
+    @media (max-width: 380px) {
+        .header-info span#timeInWords { font-size: 0.75rem; }
+        .header-info h2 { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <div class="dock-container">
+      <a href="https://github.com/SHIV-360/SHIV-360/blob/main/Shivang_Resume_2.pdf" class="dock-item" data-social="resume" aria-label="Resume" target="_blank">
+        <svg viewBox="0 0 512 512"><path d="M384 128h-128V0L384 128zM256 160V0H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V160H256z" fill="currentColor"></path></svg>
+      </a>
+      <a href="https://github.com/SHIV-360/" class="dock-item" data-social="github" aria-label="GitHub" target="_blank">
+        <svg viewBox="0 0 16 16"><path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.59 7.59 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+      </a>
+      <a href="https://mail.google.com/" class="dock-item" data-social="gmail" aria-label="shivangd262@gmail.com" target="_blank">
+        <svg viewBox="0 0 512 512"><path d="M502.3 190.8L327.4 338.2c-20.6 17.7-50.5 17.7-71.1 0L9.7 190.8 C3.9 186.9 0 180.8 0 174.3V80c0-26.5 21.5-48 48-48h416c26.5 0 48 21.5 48 48v94.3c0 6.5-3.9 12.6-9.7 16.5z" fill="currentColor"></path><path d="M480 128H32c-17.7 0-32 14.3-32 32v240c0 17.7 14.3 32 32 32h448c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32zM464 416H48V176l208 142.9 208-142.9v240z" fill="currentColor"></path></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/shivang-dwivedi-36o/" class="dock-item" data-social="linkedin" aria-label="LinkedIn" target="_blank">
+        <svg viewBox="0 0 448 512"><path d="M100.28 448H7.4V148.9h92.88zm-46.44-341C24.16 107 0 82.84 0 53.86A53.77 53.77 0 0153.84 0c29.88 0 53.84 24.2 53.84 53.86 0 28.98-24 53.14-53.84 53.14zM447.9 448h-92.68V302.4c0-34.7-12.4-58.4-43.36-58.4-23.64 0-37.76 15.92-44 31.3-2.28 5.56-2.84 13.32-2.84 21.16V448h-92.7s1.24-241.1 0-266.1h92.7v37.7c12.32-19 34.36-46 83.64-46 61.14 0 107 39.88 107 125.44z" fill="currentColor"></path></svg>
+      </a>
+      <a href="https://open.spotify.com/user/czaep85onxxkyl0lz8gf3pmvc?si=4fbc99c6f96c43ff" class="dock-item" data-social="spotify" aria-label="Spotify" target="_blank">
+        <svg viewBox="0 0 100 100"><path d="M50,4C24.7,4,4,24.7,4,50s20.6,46,46,46s46-20.6,46-46S75.4,4,50,4z M71.6,71.5c0,0,0,0.1-0.1,0.1 c-0.8,1.2-2,1.8-3.2,1.8c-0.7,0-1.4-0.2-2-0.6c-10.2-6.3-23.3-7.7-38.8-4.1c-2.1,0.6-4-0.9-4.5-2.7 c-0.6-2.3,0.9-4.1,2.7-4.6c17.7-4,32.6-2.3,44.4,5c0.9,0.4,1.5,1,1.8,1.9C72.2,69.3,72.1,70.5,71.6,71.5z M76.9,59.3L76.9,59.3c-0.8,1.1-1.9,1.9-3.2,2.1c-0.2,0-0.5,0.1-0.7,0.1c-0.8,0-1.6-0.3-2.3-0.7 c-12-7.3-30.1-9.4-43.9-5c-2.5,0.6-5-0.7-5.6-3c-0.6-2.5,0.7-4.9,3-5.5c16.5-5,37.2-2.5,51.4,6.2 c0.8,0.4,1.5,1.3,1.8,2.5C77.9,57,77.6,58.3,76.9,59.3z M83.2,45.6c-1,1.4-2.7,2.1-4.4,2.1 c-0.9,0-1.9-0.2-2.7-0.7c0,0,0,0,0,0c-13.9-8.3-37.8-9.3-51.4-5.1c-2.7,0.8-5.5-0.7-6.4-3.3 c-0.8-2.7,0.7-5.6,3.3-6.4c16.2-4.8,43-3.8,59.8,6.2C83.8,39.6,84.7,42.9,83.2,45.6z" fill="currentColor"></path></svg>
+      </a>
+    </div>
+
+    <main class="glass-window">
+      <div class="window-header">
+        <div class="header-info">
+          <h2>Chatbox</h2>
+          <span class="divider">|</span>
+          <span id="timeInWords">Loading...</span>
+        </div>
+        <button class="close-btn" onclick="closeWindow()">×</button>
+      </div>
+
+      <div class="chat-body" id="chat-box">
+        <div class="typing" id="initial-typing">Shivang is typing...</div>
+      </div>
+
+      <div class="window-footer">
+        <div class="typing" id="typing-status">Shivang is typing...</div>
+        
+        <div class="options-grid" id="first-response-box">
+          <button class="pill-btn" onclick="sendResponse('Tell me about yourself')">Tell me about yourself</button>
+          <button class="pill-btn" onclick="sendResponse('What can this website do?')">What can this website do?</button>
+          <button class="pill-btn" onclick="sendResponse('Goodbye')">Goodbye</button>
+        </div>
+
+        <div class="options-grid" id="second-response-box" style="display: none;">
+          <button class="pill-btn" onclick="sendResponse('About you')">About you</button>
+          <button class="pill-btn" onclick="sendResponse('Your Project')">Your Project</button>
+          <button class="pill-btn" onclick="sendResponse('Your friends')">Your friends</button>
+          <button class="pill-btn" onclick="sendResponse('Books you read')">Books you read</button>
+          <button class="pill-btn" onclick="sendResponse('Gallery')">Gallery</button>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    let chatHistory = sessionStorage.getItem('chatHistory') ? JSON.parse(sessionStorage.getItem('chatHistory')) : [];
+    let typingDelay = 800;
+    const chatBox = document.getElementById('chat-box');
+    const typingStatus = document.getElementById('typing-status');
+
+    // Create message bubble
+    function createMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message', sender);
+      msgDiv.innerHTML = text;
+      return msgDiv;
+    }
+
+    // THE EASTER EGG CLOSE FUNCTION
+    function closeWindow() {
+      alert("It's a cool window, please don't close it!");
+    }
+
+    // Initialize
+    window.onload = () => {
+      chatHistory.forEach((message) => {
+        const type = message.type === 'user-message' ? 'user' : 'bot';
+        chatBox.appendChild(createMessage(message.text, type));
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      if (chatHistory.length === 0) {
+        document.getElementById('initial-typing').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('initial-typing').style.display = 'none';
+          chatBox.appendChild(createMessage("Hi, Welcome! I'm Shivang.You can find my <b>RESUME and Socials</b> via the icons. What else would you like to know?", 'bot'));
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 1200);
+      }
+    };
+
+    function sendResponse(userText) {
+      // User Message
+      chatBox.appendChild(createMessage(userText, 'user'));
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Save History
+      chatHistory.push({ type: 'user-message', text: userText });
+      sessionStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+
+      // Show Typing
+      typingStatus.style.display = 'block';
+
+      // Bot Response
+      setTimeout(() => {
+        typingStatus.style.display = 'none';
+        
+        let botText = '';
+        if (userText === "Tell me about yourself") {
+          botText = 'I am Shivang, a passionate developer. This site was part of my <a href="https://www.linkedin.com/in/shivang-dwivedi-36o/" target="_blank">#51DaysofProject</a>. More info <a href="about_me.html" target="_self">here</a>.';
+        } else if (userText === "What can this website do?") {
+          botText = "I can share my Projects, Friends, Reading list, and Gallery. Choose an option below:";
+          toggleOptions();
+        } else if (userText === "Goodbye") {
+          botText = "Goodbye! Have a great day!";
+        } else if (userText === "About you") {
+          botText = 'Check out my details <a href="about_me.html" target="_self">here</a>.';
+        } else if (userText === "Your Project") {
+          botText = 'Discover my Projects <a href="project.html" target="_self">here</a>.';
+        } else if (userText === "Your friends") {
+          botText = 'Meet my friends <a href="frnds.html" target="_self">here</a>.';
+        } else if (userText === "Books you read") {
+          botText = 'See my book list <a href="books.html" target="_self">here</a>.';
+        } else if (userText === "Gallery") {
+          botText = 'View my gallery <a href="pics.html" target="_self">here</a>.';
+        }
+
+        chatBox.appendChild(createMessage(botText, 'bot'));
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Save Bot History
+        chatHistory.push({ type: 'message', text: botText });
+        sessionStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+      }, typingDelay);
+    }
+
+    function toggleOptions() {
+      document.getElementById('first-response-box').style.display = 'none';
+      document.getElementById('second-response-box').style.display = 'flex';
+    }
+
+    // Clock Logic
+    function numberToWords(num) {
+      const words = [
+        'Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+        'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen',
+        'Twenty', 'Twenty-One', 'Twenty-Two', 'Twenty-Three', 'Twenty-Four', 'Twenty-Five', 'Twenty-Six', 'Twenty-Seven',
+        'Twenty-Eight', 'Twenty-Nine', 'Thirty', 'Thirty-One', 'Thirty-Two', 'Thirty-Three', 'Thirty-Four', 'Thirty-Five',
+        'Thirty-Six', 'Thirty-Seven', 'Thirty-Eight', 'Thirty-Nine', 'Forty', 'Forty-One', 'Forty-Two', 'Forty-Three',
+        'Forty-Four', 'Forty-Five', 'Forty-Six', 'Forty-Seven', 'Forty-Eight', 'Forty-Nine', 'Fifty', 'Fifty-One',
+        'Fifty-Two', 'Fifty-Three', 'Fifty-Four', 'Fifty-Five', 'Fifty-Six', 'Fifty-Seven', 'Fifty-Eight', 'Fifty-Nine'
+      ];
+      return words[num];
+    }
+
+    function timeInWords() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes();
+      const hourNumber = hours % 12 || 12;
+      const hourWord = `<span class="hour">${numberToWords(hourNumber)}</span>`;
+      const minuteWord = numberToWords(minutes);
+
+      let timeString = "";
+      if (minutes === 0) {
+        timeString = `- It's exactly ${hourWord} o'clock -`;
+      } else if (minutes <= 30) {
+        timeString = `- It's ${minuteWord} past ${hourWord} -`;
+      } else {
+        const nextHourNumber = (hours + 1) % 12 || 12;
+        const nextHourWord = `<span class="hour">${numberToWords(nextHourNumber)}</span>`;
+        const minutesTo = 60 - minutes;
+        timeString = `- It's ${numberToWords(minutesTo)} to ${nextHourWord} -`;
+      }
+      document.getElementById('timeInWords').innerHTML = timeString;
+    }
+    setInterval(timeInWords, 1000);
+    timeInWords();
+  </script>
+</body>
+</html>
