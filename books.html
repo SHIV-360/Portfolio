@@ -213,7 +213,21 @@
 
     /* --- MOBILE RESPONSIVENESS --- */
     @media (max-width: 768px) {
-      .app-container { width: 94%; height: 94vh; }
+      .app-container {
+        flex-direction: column;
+        width: 92%; /*1. Slightly reduced width for better side margins */
+        height: 85dvh; 
+        
+        /* 2. Add a max-height to ensure it doesn't stretch too far on very tall phones */
+        max-height: -webkit-fill-available;
+        
+        gap: 12px; /* Reduced gap slightly to save vertical space */
+        max-width: none;
+        
+        /* 3. This manually pushes it down from top and pulls up from bottom */
+        margin-top: auto;
+        margin-bottom: auto;
+      }
       .content-body { padding: 20px; }
       
       /* Make cards slightly shorter on mobile to fit more */
