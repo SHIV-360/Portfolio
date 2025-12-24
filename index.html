@@ -28,6 +28,11 @@
 
     * { box-sizing: border-box; }
 
+    /* FIX 1: Set a standard base font size for consistency across browsers */
+    html {
+      font-size: 16px; 
+    }
+
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
@@ -151,42 +156,41 @@
       align-items: center;
     }
 
+    /* FIX 2: Header Layout & Wrapping */
     .header-info {
         display: flex;
         align-items: center;
-        gap: 12px; 
+        gap: 10px; 
+        flex-wrap: wrap; /* Allows text to wrap on small screens */
     }
 
+    /* FIX 3: Fluid Typography */
     .header-info h2 {
       margin: 0;
-      font-size: 1.5rem; 
+      /* Min: 18px, Ideal: 5vw, Max: 24px */
+      font-size: clamp(1.125rem, 5vw, 1.5rem); 
       font-weight: 800;
       color: #111;
       line-height: 1;
+      flex-shrink: 0; /* Prevents "Chatbox" title from squishing */
     }
 
-    .divider {
-        font-size: 1.5rem;
-        color: #999;
-        font-weight: 300;
-    }
-
+    /* FIX 4: Overflow handling for the clock */
     .header-info span#timeInWords {
-      font-size: 1.2rem; 
+      /* Min: 12px, Ideal: 3.5vw, Max: 19px */
+      font-size: clamp(0.75rem, 3.5vw, 1.2rem); 
       color: #444;
       font-weight: 500;
-      line-height: 1;
-      white-space: nowrap;
+      line-height: 1.2;
+      
+      white-space: normal; /* Allows wrapping */
+      text-align: left;
     }
     
-    /* --- FIXED: Hour Color --- */
     #timeInWords .hour { 
       background: var(--primary-gradient); 
-      
-      /* The Fix: Add the standard property below the webkit one */
       -webkit-background-clip: text;
       background-clip: text; 
-      
       -webkit-text-fill-color: transparent;
       font-weight: 800;
       color: var(--primary-color);
@@ -309,16 +313,11 @@
       /* Floating Container */
       .app-container {
         flex-direction: column;
-        width: 92%; /*1. Slightly reduced width for better side margins */
+        width: 92%; 
         height: 90dvh; 
-        
-        /* 2. Add a max-height to ensure it doesn't stretch too far on very tall phones */
         max-height: -webkit-fill-available;
-        
-        gap: 12px; /* Reduced gap slightly to save vertical space */
+        gap: 12px; 
         max-width: none;
-        
-        /* 3. This manually pushes it down from top and pulls up from bottom */
         margin-top: auto;
         margin-bottom: auto;
       }
@@ -342,7 +341,6 @@
         border-radius: 12px;
       }
       
-      /* Reset desktop hover transform for mobile */
       .dock-item:hover { transform: scale(1.1); }
       .dock-item::after { display: none; } 
 
@@ -356,9 +354,6 @@
       }
 
       .window-header { padding: 15px; }
-      .header-info h2 { font-size: 1.2rem; }
-      .divider { font-size: 1.2rem; }
-      .header-info span#timeInWords { font-size: 0.9rem; }
 
       .chat-body { padding: 20px; }
       .message { max-width: 85%; font-size: 0.9rem; }
@@ -371,11 +366,8 @@
       }
     }
     
-    /* Extra Small Screen Fix */
-    @media (max-width: 380px) {
-        .header-info span#timeInWords { font-size: 0.5rem; }
-        .header-info h2 { font-size: 0.6rem; }
-    }
+    /* FIX 5: Removed all problematic "Extra Small Screen" manual overrides */
+
   </style>
 </head>
 <body>
