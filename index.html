@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2390e0ef;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%23C9DCF9;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23FF9A9E;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='50' fill='url(%23grad)' /%3E%3C/svg%3E">
   <title>Chat With Shivang</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
@@ -10,7 +11,7 @@
     /* --- THEME VARIABLES --- */
     :root {
       /* Colorful Mesh Gradient Background */
-      --bg-gradient: linear-gradient(125deg, #FF9A9E 0%, #FECFEF 50%, #90e0ef 100%);
+      --bg-gradient: linear-gradient(125deg,#FAD0C4 0%, #F1E1FF 50%, #90e0ef 100%);
       
       /* Glassmorphism Variables */
       --glass-bg: rgba(255, 255, 255, 0.65);
@@ -34,7 +35,7 @@
       overflow: hidden;
       background: var(--bg-gradient);
       background-size: 200% 200%;
-      animation: gradientMove 10s ease infinite;
+      animation: gradientMove 14s ease infinite;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -424,9 +425,9 @@
         <div class="options-grid" id="second-response-box" style="display: none;">
           <button class="pill-btn" onclick="sendResponse('About you')">About you</button>
           <button class="pill-btn" onclick="sendResponse('Your Project')">Your Project</button>
-          <button class="pill-btn" onclick="sendResponse('Your friends')">Your friends</button>
+          <button class="pill-btn" onclick="sendResponse('Your Friends')">Your Friends</button>
           <button class="pill-btn" onclick="sendResponse('Books you read')">Books you read</button>
-          <button class="pill-btn" onclick="sendResponse('Gallery')">Gallery</button>
+          <button class="pill-btn" onclick="sendResponse('Your Gallery')">Your Gallery</button>
         </div>
       </div>
     </main>
@@ -490,7 +491,7 @@
         if (userText === "Tell me about yourself") {
           botText = 'I am Shivang, a passionate developer. This site was part of my <a href="https://www.linkedin.com/in/shivang-dwivedi-36o/" target="_blank">#51DaysofProject</a>. More info <a href="about_me.html" target="_self">here</a>.';
         } else if (userText === "What can this website do?") {
-          botText = "I can share my Projects, Friends, Reading list, and Gallery. Choose an option below:";
+          botText = "I can share my Projects, Friends, Reading list, and Gallery. What do you want to know:";
           toggleOptions();
         } else if (userText === "Goodbye") {
           botText = "Goodbye! Have a great day! You can visit the older version of this portfolio <a href=\"https://shiv-360.github.io/Shivang_Dwivedi/\" target=\"_blank\">here</a>.";
@@ -498,11 +499,11 @@
           botText = 'Check out my details <a href="about_me.html" target="_self">here</a>.';
         } else if (userText === "Your Project") {
           botText = 'Discover my Projects <a href="project.html" target="_self">here</a>.';
-        } else if (userText === "Your friends") {
+        } else if (userText === "Your Friends") {
           botText = 'Meet my friends <a href="frnds.html" target="_self">here</a>.';
         } else if (userText === "Books you read") {
           botText = 'See my book list <a href="books.html" target="_self">here</a>.';
-        } else if (userText === "Gallery") {
+        } else if (userText === "Your Gallery") {
           botText = 'View my gallery <a href="pics.html" target="_self">here</a>.';
         }
 
