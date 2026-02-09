@@ -89,6 +89,18 @@
             "name": "Vasudha",
             "quote": "sarcasm, roasts everyone, delhii gurl 🔥",
             "image": "gallary/undergrad4.jpg"
+        },
+        {
+            "category": "Undergrad",
+            "name": "Nilakshya",
+            "quote": "sensitive guy, with strong determination ",
+            "image": "gallary/undergrad5.jpg"
+        },
+        {
+            "category": "Undergrad",
+            "name": "Satwick",
+            "quote": "He is too innocent for this world",
+            "image": "gallary/undergrad6.jpg"
         }
     ]
 }
